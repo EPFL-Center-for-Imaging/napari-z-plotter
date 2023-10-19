@@ -1,0 +1,10 @@
+name: napari-z-plotter
+display_name: Napari z-plotter
+contributions:
+  commands:
+    - id: napari-z-plotter.plotter
+      title: Z line profile plotter
+      python_name: napari_z_plotter:DepthLinePlottingWidget
+  widgets:
+    - command: napari-z-plotter.plotter
+      display_name: Z line profile plotter

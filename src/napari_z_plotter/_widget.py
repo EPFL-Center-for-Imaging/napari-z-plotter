@@ -30,7 +30,7 @@ class DepthLineProfileWidget(QWidget):
         self.canvas = FigureCanvas()
         self.canvas.figure.set_tight_layout(True)
         self.canvas.figure.set_size_inches(6.0, 4.0)
-        self.canvas.figure.patch.set_facecolor("#5a626c")
+        self.canvas.figure.patch.set_facecolor("#c4d6ec")
 
         self.axes = self.canvas.figure.subplots()
         self.axes.set_facecolor("#ffffff")
@@ -48,16 +48,13 @@ class DepthLineProfileWidget(QWidget):
         self.viewer.layers.events.removed.connect(self._on_layer_change)
         self._on_layer_change(None)
 
-        import tifffile
-        self.viewer.add_image(tifffile.imread('/home/wittwer/data/cylinderi.tif'))
-
     def _on_layer_change(self, e):
         """
         Called when a new layer is inserted, removed, or renamed. Updates the layer combobox.
         """
         self.cb_image.clear()
         for x in self.viewer.layers:
-            if isinstance(x, napari.layers.Image) & (x.data.ndim == 3):
+            if isinstance(x, napari.layers.Image) & (x.data.ndim == 3) & (x.rgb == False):
                 self.cb_image.addItem(x.name, x.data)
                 if self._on_mouse_click not in x.mouse_drag_callbacks:
                     x.mouse_drag_callbacks.append(self._on_mouse_click)
@@ -89,4 +86,5 @@ class DepthLineProfileWidget(QWidget):
 
         self.axes.cla()
         self.axes.plot(line_profile)
+        self.axes.set_title(f"[{y}, {x}]")
         self.canvas.draw()

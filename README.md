@@ -2,7 +2,9 @@
 
 In 2D view, click on an pixel to plot the intensity along the depth (Z) axis of a 3D image at the location of that pixel.
 
-![demo_gif]('assets/napari_z_plotter-1.gif')
+<p align="center">
+    <img src="https://github.com/MalloryWittwer/napari-z-plotter/blob/main/assets/napari_z_plotter-1.gif" height="400">
+</p>
 
 ## Installation
 

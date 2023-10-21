@@ -1,6 +1,6 @@
 # napari-z-plotter
 
-Interactively plot the image intensity along the depth axis of a 3D image dataset.
+In 2D view, click on an pixel to plot the intensity along the depth (Z) axis of a 3D image at the location of that pixel.
 
 ## Installation
 

@@ -1,9 +1,9 @@
 from qtpy.QtWidgets import (
-    QWidget, 
-    QComboBox, 
-    QSizePolicy, 
-    QLabel, 
-    QGridLayout, 
+    QWidget,
+    QComboBox,
+    QSizePolicy,
+    QLabel,
+    QGridLayout,
 )
 from qtpy.QtCore import Qt
 
@@ -12,6 +12,7 @@ import napari.layers
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 import numpy as np
+
 
 class DepthLineProfileWidget(QWidget):
     def __init__(self, napari_viewer):
@@ -70,21 +71,23 @@ class DepthLineProfileWidget(QWidget):
         # Check that we are in 2D mode
         if len(event.dims_displayed) != 2:
             return
-        
+
         # Take care of the transpose state of the image of in the viewer
         axes = list(event.dims_displayed)
         axes.insert(0, list(set([0, 1, 2]) - set(event.dims_displayed))[0])
-        _, y, x = np.array(event.position).astype(int)[axes]
+        _, y, x = np.array(source_layer.world_to_data(event.position), dtype=np.int)[axes]
+
         image_transposed = image_data.transpose(axes)
         _, max_y, max_x = image_transposed.shape
 
         # Check that the click is not outside the image
         if not (0 <= y <= max_y) & (0 < x < max_x):
             return
-        
+
         line_profile = image_transposed[:, y, x]
+        z_axis = [source_layer.data_to_world((z_ind, 0, 0))[0] for z_ind in range(len(line_profile))]
 
         self.axes.cla()
-        self.axes.plot(line_profile)
+        self.axes.plot(z_axis, line_profile)
         self.axes.set_title(f"[{y}, {x}]")
         self.canvas.draw()

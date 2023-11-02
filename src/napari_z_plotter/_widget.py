@@ -42,6 +42,10 @@ class DepthLineProfileWidget(QWidget):
         self.canvas.setMinimumSize(200, 150)
         grid_layout.addWidget(self.canvas, 1, 0, 1, 2)
 
+        # Cut slider event
+        self.viewer.dims.events.current_step.connect(self._on_slice_change)
+
+        # Events related to layer change
         self.viewer.layers.events.inserted.connect(
             lambda e: e.value.events.name.connect(self._on_layer_change)
         )
@@ -75,7 +79,7 @@ class DepthLineProfileWidget(QWidget):
         # Take care of the transpose state of the image of in the viewer
         axes = list(event.dims_displayed)
         axes.insert(0, list(set([0, 1, 2]) - set(event.dims_displayed))[0])
-        _, y, x = np.array(source_layer.world_to_data(event.position), dtype=np.int)[axes]
+        z, y, x = np.array(source_layer.world_to_data(event.position), dtype=np.int)[axes]
 
         image_transposed = image_data.transpose(axes)
         _, max_y, max_x = image_transposed.shape
@@ -89,5 +93,21 @@ class DepthLineProfileWidget(QWidget):
 
         self.axes.cla()
         self.axes.plot(z_axis, line_profile)
+        self.axes.axvline(event.position[axes[0]], linestyle='--', color='grey')
         self.axes.set_title(f"[{y}, {x}]")
+        self.canvas.draw()
+
+    def _on_slice_change(self, event):
+        """
+        Called when the user changes the slice slider. Updates the line plot.
+        """
+
+        slice_index = event.value[0]
+        # Convert slice index to real-world coordinates
+        z_data_range = np.arange(*self.viewer.dims.range[0])
+        z_data = z_data_range[slice_index]
+
+        # Modify vline
+        self.axes.lines[1].set(xdata=[z_data]*2, visible=True)
+
         self.canvas.draw()

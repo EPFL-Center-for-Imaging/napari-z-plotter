@@ -79,7 +79,7 @@ class DepthLineProfileWidget(QWidget):
         # Take care of the transpose state of the image of in the viewer
         axes = list(event.dims_displayed)
         axes.insert(0, list(set([0, 1, 2]) - set(event.dims_displayed))[0])
-        z, y, x = np.array(source_layer.world_to_data(event.position), dtype=np.int)[axes]
+        z, y, x = np.array(source_layer.world_to_data(event.position), dtype=int)[axes]
 
         image_transposed = image_data.transpose(axes)
         _, max_y, max_x = image_transposed.shape

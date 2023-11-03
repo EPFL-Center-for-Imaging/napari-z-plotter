@@ -52,6 +52,13 @@ class DepthLineProfileWidget(QWidget):
         self.viewer.layers.events.inserted.connect(self._on_layer_change)
         self.viewer.layers.events.removed.connect(self._on_layer_change)
         self._on_layer_change(None)
+    
+    @property
+    def axis(self):
+        axis = list(self.viewer.dims.displayed)
+        axis.insert(0, list(set([0, 1, 2]) - set(self.viewer.dims.displayed))[0])
+        
+        return axis
 
     def _on_layer_change(self, e):
         """
@@ -77,11 +84,9 @@ class DepthLineProfileWidget(QWidget):
             return
 
         # Take care of the transpose state of the image of in the viewer
-        axes = list(event.dims_displayed)
-        axes.insert(0, list(set([0, 1, 2]) - set(event.dims_displayed))[0])
-        z, y, x = np.array(source_layer.world_to_data(event.position), dtype=np.int)[axes]
+        z, y, x = np.array(source_layer.world_to_data(event.position), dtype=np.int_)[self.axis]
 
-        image_transposed = image_data.transpose(axes)
+        image_transposed = image_data.transpose(self.axis)
         _, max_y, max_x = image_transposed.shape
 
         # Check that the click is not outside the image
@@ -93,21 +98,15 @@ class DepthLineProfileWidget(QWidget):
 
         self.axes.cla()
         self.axes.plot(z_axis, line_profile)
-        self.axes.axvline(event.position[axes[0]], linestyle='--', color='grey')
+        self.axes.axvline(event.position[self.axis[0]], linestyle='--', color='grey')
         self.axes.set_title(f"[{y}, {x}]")
         self.canvas.draw()
 
     def _on_slice_change(self, event):
         """
-        Called when the user changes the slice slider. Updates the line plot.
+        Called when the user changes the slice slider. Updates the line plot. Update vline.
         """
-
-        slice_index = event.value[0]
-        # Convert slice index to real-world coordinates
-        z_data_range = np.arange(*self.viewer.dims.range[0])
-        z_data = z_data_range[slice_index]
-
-        # Modify vline
-        self.axes.lines[1].set(xdata=[z_data]*2, visible=True)
+        if len(self.axes.lines) > 0:
+            self.axes.lines[1].set(xdata=[event.value[self.axis[0]]]*2, visible=True)
 
         self.canvas.draw()

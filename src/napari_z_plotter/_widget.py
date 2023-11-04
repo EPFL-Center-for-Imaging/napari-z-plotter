@@ -53,8 +53,6 @@ class DepthLineProfileWidget(QWidget):
         self.viewer.layers.events.removed.connect(self._on_layer_change)
         self._on_layer_change(None)
 
-        import skimage.data; self.viewer.add_image(skimage.data.brain(), scale=[15, 5, 1], colormap='viridis')
-    
     @property
     def z_data_range(self):
         dims_range = np.array(self.viewer.dims.range, dtype='int')[self.axis][0]

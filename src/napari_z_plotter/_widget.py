@@ -52,6 +52,13 @@ class DepthLineProfileWidget(QWidget):
         self.viewer.layers.events.inserted.connect(self._on_layer_change)
         self.viewer.layers.events.removed.connect(self._on_layer_change)
         self._on_layer_change(None)
+
+        import skimage.data; self.viewer.add_image(skimage.data.brain(), scale=[15, 5, 1], colormap='viridis')
+    
+    @property
+    def z_data_range(self):
+        dims_range = np.array(self.viewer.dims.range, dtype='int')[self.axis][0]
+        return np.arange(*dims_range)
     
     @property
     def axis(self):
@@ -94,19 +101,20 @@ class DepthLineProfileWidget(QWidget):
             return
 
         line_profile = image_transposed[:, y, x]
-        z_axis = [source_layer.data_to_world((z_ind, 0, 0))[0] for z_ind in range(len(line_profile))]
 
         self.axes.cla()
-        self.axes.plot(z_axis, line_profile)
-        self.axes.axvline(event.position[self.axis[0]], linestyle='--', color='grey')
-        self.axes.set_title(f"[{y}, {x}]")
+        self.axes.plot(self.z_data_range, line_profile)
+        self.axes.axvline(self.z_data_range[z], linestyle='--', color='grey')
+        self.axes.set_xlim(0, max(self.z_data_range))
         self.canvas.draw()
 
     def _on_slice_change(self, event):
         """
         Called when the user changes the slice slider. Updates the line plot. Update vline.
         """
+        line_position = self.z_data_range[event.value[self.axis[0]]]
+
         if len(self.axes.lines) > 0:
-            self.axes.lines[1].set(xdata=[event.value[self.axis[0]]]*2, visible=True)
+            self.axes.lines[1].set(xdata=[line_position]*2, visible=True)
 
         self.canvas.draw()

@@ -103,7 +103,7 @@ class DepthLineProfileWidget(QWidget):
         self.axes.cla()
         self.axes.plot(self.z_data_range, line_profile)
         self.axes.axvline(self.z_data_range[z], linestyle='--', color='grey')
-        self.axes.set_xlim(0, max(self.z_data_range))
+        self.axes.set_xlim(min(self.z_data_range), max(self.z_data_range))
         self.canvas.draw()
 
     def _on_slice_change(self, event):

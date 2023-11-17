@@ -95,12 +95,14 @@ class DepthLineProfileWidget(QWidget):
                 z_range = np.arange(max_z) * z_scale + z_shift
 
                 # List of lines to add
-                line_profiles += [[z_range, image_transposed[:, y, x]]]
+                line_profiles += [[z_range, image_transposed[:, y, x], {'label': layer.name}]]
 
         self.axes.cla()
-        [self.axes.plot(*line_profile) for line_profile in line_profiles]
+        [self.axes.plot(line_profile[0], line_profile[1], **line_profile[2]) for line_profile in line_profiles]
         self._slice_indicator = self.axes.axvline(self.z_data_range[z], linestyle='--', color='grey')
         self.axes.set_xlim(min(self.z_data_range), max(self.z_data_range))
+        if len(line_profiles) > 1:
+            self.axes.legend()
         self.canvas.draw()
 
     def _on_slice_change(self, event):

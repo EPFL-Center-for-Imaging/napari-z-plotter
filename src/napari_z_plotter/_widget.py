@@ -60,7 +60,7 @@ class DepthLineProfileWidget(QWidget):
     @property
     def data_layers(self):
         return [layer for layer in self.viewer.layers
-                if isinstance(layer, napari.layers.Image) & (layer.data.ndim == 3) & (layer.rgb == False)]
+                if isinstance(layer, napari.layers.Image) and (layer.data.ndim == 3) and (layer.rgb is False)]
 
     def _on_layer_change(self, e):
         """

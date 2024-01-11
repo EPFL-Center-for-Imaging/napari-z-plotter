@@ -1,3 +1,4 @@
+![EPFL Center for Imaging logo](https://imaging.epfl.ch/resources/logo-for-gitlab.svg)
 # napari-z-plotter
 
 In 2D view, click on an pixel to plot the intensity along the depth (Z) axis of a 3D image at that location.
@@ -5,6 +6,12 @@ In 2D view, click on an pixel to plot the intensity along the depth (Z) axis of 
 <p align="center">
     <img src="https://github.com/MalloryWittwer/napari-z-plotter/blob/main/assets/napari_z_plotter-1.gif" height="400">
 </p>
+
+This project is part of an ongoing collaboration between the [EPFL Center for Imaging](https://imaging.epfl.ch/) and the [Bionanophotonic Systems Laboratory](https://www.epfl.ch/labs/bios/).
+
+**Authors**
+- Mallory Wittwer (EPFL Center for Imaging)
+- Felix Richter (BIOS)
 
 ## Installation
 

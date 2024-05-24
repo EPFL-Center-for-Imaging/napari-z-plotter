@@ -48,7 +48,7 @@ class DepthLineProfileWidget(QWidget):
 
     @property
     def z_data_range(self):
-        dims_range = np.array(self.viewer.dims.range, dtype='int')[self.axis][0]
+        dims_range = np.array(self.viewer.dims.range, dtype='float')[self.axis][0]
         return np.arange(*dims_range)
 
     @property
